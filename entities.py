@@ -66,12 +66,32 @@ class Deck:
         return self.cards.pop()
 
 
+class HandIter:
+    """
+    Iterator for the class Hand
+    """
+
+    def __init__(self, hand):
+        self.cards = hand.cards
+        self.index = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.index < len(self.cards):
+            output = self.cards[self.index]
+            self.index += 1
+            return output
+        else:
+            raise StopIteration
+
+
 class Hand:
     """
     Hand of cards
 
     Atributes
-    - cards: list[Card] - cards in the hand
     - total: int - sum of the rank values
 
     Methods
@@ -83,6 +103,23 @@ class Hand:
         self.cards = []
         self.total = 0
         self.aces_to_adjust = 0
+
+    def __iter__(self):
+        return HandIter(self)
+
+    def __len__(self):
+        return len(self.cards)
+
+    def __str__(self) -> str:
+        output = ""
+        if len(self.cards) > 0:
+            index = 0
+            output += str(self.cards[index])
+            index += 1
+            while index < len(self.cards):
+                output += f", {self.cards[index]}"
+                index += 1
+        return output
 
     def add(self, card: Card) -> None:
         """
