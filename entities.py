@@ -136,12 +136,18 @@ class Hand:
         else:
             self.total += RANKS[card.rank]
 
-    def adjust_for_aces(self) -> None:
+    def adjust_for_aces(self) -> int:
         """
         Adjusts the value of the aces to unbust the hand's owner
+
+        Returns
+        - Quantity of aces adjusted
         """
 
+        adjusted = 0
         while self.aces_to_adjust > 0 and self.total > 21:
             self.aces_to_adjust -= 1
+            adjusted += 1
             self.total -= RANKS["Ace"]["max"]
             self.total += RANKS["Ace"]["min"]
+        return adjusted
