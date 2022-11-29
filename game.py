@@ -101,7 +101,6 @@ def got_closer(hand1: entities.Hand, hand2: entities.Hand) -> entities.Hand | No
             return hand2
 
 
-
 print(r"   ___ _            _     _            _     ")
 print(r"  / __\ | __ _  ___| | __(_) __ _  ___| | __ ")
 print(r" /__\// |/ _` |/ __| |/ /| |/ _` |/ __| |/ / ")
@@ -181,7 +180,7 @@ while True:
         print("There was a tie")
     print(f"You now have {chips} chips")
 
-    if not keep_playing():
+    if not play_again():
         break
 
 print(f"You've finished the game with {chips} chips")
