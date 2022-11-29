@@ -2,6 +2,7 @@
 """
 
 import entities
+import random
 
 
 def print_dealer(dealer: entities.Hand) -> None:
@@ -79,7 +80,7 @@ def play_again() -> bool:
     """
 
     while True:
-        option = input("Play again? (y/n) ").lower()
+        option = input("Play again (y/n)? ").lower()
         if option == 'y':
             return True
         elif option == 'n':
@@ -101,6 +102,25 @@ def got_closer(hand1: entities.Hand, hand2: entities.Hand) -> entities.Hand | No
             return hand2
 
 
+def div(wait: bool=True) -> None:
+    """
+    """
+
+    BLACK_SUIT_CHARS = ("♠", "♥", "♦", "♣")
+    WHITE_SUIT_CHARS = ("♤", "♡", "♢", "♧")
+    output = ""
+
+    for _ in range(25):
+        output += random.choice(WHITE_SUIT_CHARS)
+        output += random.choice(BLACK_SUIT_CHARS)
+
+    if wait:
+        input()
+        print(output + "\n")
+    else:
+        print("\n" + output + "\n")
+
+
 print(r"   ___ _            _     _            _     ")
 print(r"  / __\ | __ _  ___| | __(_) __ _  ___| | __ ")
 print(r" /__\// |/ _` |/ __| |/ /| |/ _` |/ __| |/ / ")
@@ -112,7 +132,7 @@ print()
 chips = 100
 
 while True:
-    print("The game has begun!")
+    print("The round has begun!")
 
     deck = entities.Deck()
     deck.shuffle()
@@ -131,10 +151,11 @@ while True:
     print(f"You have {chips} chips")
     bet = input_bet(chips)
 
-    print_dealer(dealer_hand)
+    div(wait=False)
 
     keep_playing = True
     while keep_playing:
+        print_dealer(dealer_hand)
         print(f"Your hand: {player_hand}")
         move = input_move()
         if move == "hit":
@@ -142,23 +163,28 @@ while True:
             keep_playing = not is_bust(player_hand)
         else:
             keep_playing = False
+        div(wait=False)
 
     if not is_bust(player_hand):
         while dealer_hand.total < 17:
             print_dealer(dealer_hand)
             hit(deck, dealer_hand)
+            div()
         print(f"The hidden card was {hidden_card}")
         dealer_hand.add(hidden_card)
         print(f"The dealer's final hand is {dealer_hand}")
         adjusted = dealer_hand.adjust_for_aces()
         if adjusted > 0:
             print(f"The hand exceeded 21 and {adjusted} aces has their value adjusted")
+
+        div()
+
+        print(f"Dealer's hand: {dealer_hand}")
+        print(f"Your hand: {player_hand}")
         if is_bust(dealer_hand):
             print("The dealer is bust")
             win = True
         else:
-            print(f"Dealer's hand: {dealer_hand}")
-            print(f"Your hand: {player_hand}")
             winner = got_closer(dealer_hand, player_hand)
             if winner == player_hand:
                 win = True
@@ -182,5 +208,7 @@ while True:
 
     if not play_again():
         break
+
+    div(wait=False)
 
 print(f"You've finished the game with {chips} chips")
