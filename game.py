@@ -1,4 +1,11 @@
 """
+BLACKJACK
+
+Implementation of the game blackjack with a human player and the computer as a dealer
+
+- Only hit and stand moves are allowed
+- The player begins with 100 chips
+- The dealer hits until 17
 """
 
 import entities
@@ -7,6 +14,11 @@ import random
 
 def print_dealer(dealer: entities.Hand, hide_first: bool=True) -> None:
     """
+    Prints the dealer's hand
+
+    Parameters
+    - dealer: Hand - the dealer to be printed
+    - hide_first: bool - if the first card must be hidden (default=True)
     """
 
     if hide_first:
@@ -21,6 +33,10 @@ def print_dealer(dealer: entities.Hand, hide_first: bool=True) -> None:
 
 def print_player(player: entities.Hand) -> None:
     """
+    Prints the player's hand
+
+    Parameters
+    - player: Hand - the player to be printed
     """
 
     print(f"Your hand: {player}")
@@ -65,8 +81,15 @@ def input_move() -> str:
             print("Invalid input!")
 
 
-def hit(deck: entities.Deck, hand: entities.Hand, show_ace_message: bool=True):
+def hit(deck: entities.Deck, hand: entities.Hand, show_ace_message: bool=True) -> None:
     """
+    The move "hit" is made by the player
+
+    Parameters
+    - deck: Deck - deck from which the card will be removed
+    - hand: Hand - player's hand
+    - show_ace_message: bool - if a message will be shown when aces have their
+                                values adjusted (default=True)
     """
 
     card = deck.deal()
@@ -79,6 +102,11 @@ def hit(deck: entities.Deck, hand: entities.Hand, show_ace_message: bool=True):
 
 def is_bust(hand: entities.Hand) -> bool:
     """
+    Parameters
+    - hand: Hand - player's hand
+
+    Returns
+    - If the player is bust
     """
 
     return hand.total > 21
@@ -86,6 +114,10 @@ def is_bust(hand: entities.Hand) -> bool:
 
 def play_again() -> bool:
     """
+    Asks if the player wants to play again
+
+    Returns
+    - If the player wants to play again
     """
 
     while True:
@@ -100,6 +132,15 @@ def play_again() -> bool:
 
 def got_closer(hand1: entities.Hand, hand2: entities.Hand) -> entities.Hand | None:
     """
+    Verifies which one out of two hands got closer to 21
+
+    Parameters
+    - hand1: Hand - first hand
+    - hand2: Hand - second hand
+
+    Returns
+    - If there was a tie, returns None
+    - If there wasn't, returns the hand that got closer
     """
 
     if not is_bust(hand1) and not is_bust(hand2):
@@ -113,6 +154,10 @@ def got_closer(hand1: entities.Hand, hand2: entities.Hand) -> entities.Hand | No
 
 def div(wait: bool=True) -> None:
     """
+    Prints the div used in the game
+
+    Parameters
+    - wait: bool - if it waits for user input after it (default=True)
     """
 
     BLACK_SUIT_CHARS = ("♠", "♥", "♦", "♣")
@@ -152,13 +197,12 @@ while True:
     for _ in range(2):
         player_hand.add( deck.deal() )
         dealer_hand.add( deck.deal() )
-
+    print("The cards were dealt")
+    
+    dealer_hand.adjust_for_aces()
     adjusted = player_hand.adjust_for_aces()
     if adjusted > 0:
-        print(f"The hand exceeded 21 and {adjusted} aces has their value adjusted")
-    dealer_hand.adjust_for_aces()
-
-    print("The cards were dealt")
+        print(f"Your hand exceeded 21 and {adjusted} aces has their value adjusted")
     
     print(f"You have {chips} chips")
     bet = input_bet(chips)

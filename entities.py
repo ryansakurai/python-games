@@ -37,6 +37,10 @@ class Card:
 class Deck:
     """
     Deck containing all 52 cards
+
+    Methods
+    - shuffle(self) -> None
+    - deal(self) -> Card
     """
 
     def __init__(self) -> None:
