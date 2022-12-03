@@ -106,9 +106,9 @@ def got_closer(hand1: entities.Hand, hand2: entities.Hand) -> entities.Hand | No
     if not is_bust(hand1) and not is_bust(hand2):
         diff1 = 21 - hand1.total
         diff2 = 21 - hand2.total
-        if diff1 > diff2:
+        if diff1 < diff2:
             return hand1
-        elif diff2 > diff1:
+        elif diff2 < diff1:
             return hand2
 
 
