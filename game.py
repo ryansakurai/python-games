@@ -72,10 +72,9 @@ def hit(deck: entities.Deck, hand: entities.Hand):
     card = deck.deal()
     hand.add(card)
     print(f"Card withdrawn: {card}")
-    if hand.total > 21:
-        adjusted = hand.adjust_for_aces()
-        if adjusted > 0:
-            print(f"The hand exceeded 21 and {adjusted} aces has their value adjusted")
+    adjusted = hand.adjust_for_aces()
+    if adjusted > 0:
+        print(f"The hand exceeded 21 and {adjusted} aces has their value adjusted")
 
 
 def is_bust(hand: entities.Hand) -> bool:
@@ -153,6 +152,11 @@ while True:
     for _ in range(2):
         player_hand.add( deck.deal() )
         dealer_hand.add( deck.deal() )
+
+    adjusted = player_hand.adjust_for_aces()
+    if adjusted > 0:
+        print(f"The hand exceeded 21 and {adjusted} aces has their value adjusted")
+    dealer_hand.adjust_for_aces()
 
     print("The cards were dealt")
     
