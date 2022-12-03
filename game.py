@@ -65,7 +65,7 @@ def input_move() -> str:
             print("Invalid input!")
 
 
-def hit(deck: entities.Deck, hand: entities.Hand):
+def hit(deck: entities.Deck, hand: entities.Hand, show_ace_message: bool=True):
     """
     """
 
@@ -73,7 +73,7 @@ def hit(deck: entities.Deck, hand: entities.Hand):
     hand.add(card)
     print(f"Card withdrawn: {card}")
     adjusted = hand.adjust_for_aces()
-    if adjusted > 0:
+    if adjusted > 0 and show_ace_message:
         print(f"The hand exceeded 21 and {adjusted} aces has their value adjusted")
 
 
@@ -185,7 +185,7 @@ while True:
 
         while dealer_hand.total < 17:
             print_dealer(dealer_hand)
-            hit(deck, dealer_hand)
+            hit(deck, dealer_hand, show_ace_message=False)
             div()
         print(f"The hidden card was {tuple(dealer_hand)[0]}")
         print(f"The dealer's final hand is {dealer_hand}")
