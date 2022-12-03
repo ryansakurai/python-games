@@ -5,15 +5,25 @@ import entities
 import random
 
 
-def print_dealer(dealer: entities.Hand) -> None:
+def print_dealer(dealer: entities.Hand, hide_first: bool=True) -> None:
     """
-    Prints the dealer's hand, including the hidden card
-
-    Parameters
-    - dealer: Hand - dealer's hand
     """
 
-    print(f"Dealer's hand: {dealer}, xxxxxxxxxxx")
+    if hide_first:
+        cards = tuple(dealer)
+        print("Dealer's hand: xxxxxxxxxxx", end="")
+        for i in range(1, len(cards)):
+            print(f", {cards[i]}", end="")
+        print()
+    else:
+        print(f"Dealer's hand: {dealer}")
+
+
+def print_player(player: entities.Hand) -> None:
+    """
+    """
+
+    print(f"Your hand: {player}")
 
 
 def input_bet(max: int) -> int:
@@ -139,12 +149,10 @@ while True:
     print("The deck of cards was shuffled")
 
     dealer_hand = entities.Hand()
-    dealer_hand.add( deck.deal() )
-    hidden_card = deck.deal()
-
     player_hand = entities.Hand()
     for _ in range(2):
         player_hand.add( deck.deal() )
+        dealer_hand.add( deck.deal() )
 
     print("The cards were dealt")
     
@@ -152,11 +160,13 @@ while True:
     bet = input_bet(chips)
 
     div(wait=False)
+    print("Your turn")
+    div(wait=False)
 
     keep_playing = True
     while keep_playing:
         print_dealer(dealer_hand)
-        print(f"Your hand: {player_hand}")
+        print_player(player_hand)
         move = input_move()
         if move == "hit":
             hit(deck, player_hand)
@@ -166,16 +176,15 @@ while True:
         div(wait=False)
 
     if not is_bust(player_hand):
+        print("Dealer's turn")
+        div(wait=False)
+
         while dealer_hand.total < 17:
             print_dealer(dealer_hand)
             hit(deck, dealer_hand)
             div()
-        print(f"The hidden card was {hidden_card}")
-        dealer_hand.add(hidden_card)
+        print(f"The hidden card was {tuple(dealer_hand)[0]}")
         print(f"The dealer's final hand is {dealer_hand}")
-        adjusted = dealer_hand.adjust_for_aces()
-        if adjusted > 0:
-            print(f"The hand exceeded 21 and {adjusted} aces has their value adjusted")
 
         div()
 
@@ -206,7 +215,10 @@ while True:
         print("There was a tie")
     print(f"You now have {chips} chips")
 
-    if not play_again():
+    if chips <= 0:
+        print("You are out of chips, the game is over")
+        break
+    elif not play_again():
         break
 
     div(wait=False)
