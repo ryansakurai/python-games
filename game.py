@@ -164,7 +164,7 @@ def div(wait: bool=True) -> None:
     WHITE_SUIT_CHARS = ("♤", "♡", "♢", "♧")
     output = ""
 
-    for _ in range(25):
+    for _ in range(35):
         output += random.choice(WHITE_SUIT_CHARS)
         output += random.choice(BLACK_SUIT_CHARS)
 
@@ -198,7 +198,7 @@ while True:
         player_hand.add( deck.deal() )
         dealer_hand.add( deck.deal() )
     print("The cards were dealt")
-    
+
     dealer_hand.adjust_for_aces()
     adjusted = player_hand.adjust_for_aces()
     if adjusted > 0:
