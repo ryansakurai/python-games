@@ -1,7 +1,3 @@
-"""
-Contains the entities used in the game
-"""
-
 import random
 
 SUITS = ("Hearts", "Diamonds", "Spades", "Clubs")
@@ -10,14 +6,6 @@ RANKS = {"Two": 2, "Three": 3, "Four": 4, "Five": 5, "Six": 6, "Seven": 7, "Eigh
 
 
 class Card:
-    """
-    Card used in the game
-
-    Atributes
-    - suit: str - suit of the card
-    - rank: str - rank of the card
-    """
-
     def __init__(self, suit: str, rank: str) -> None:
         """
         Parameters
@@ -37,101 +25,64 @@ class Card:
 class Deck:
     """
     Deck containing all 52 cards
-
-    Methods
-    - shuffle(self) -> None
-    - deal(self) -> Card
     """
 
     def __init__(self) -> None:
-        self.cards = []
+        self._cards = []
         for suit in SUITS:
             for rank in RANKS.keys():
-                self.cards.append( Card(suit, rank) )
+                self._cards.append( Card(suit, rank) )
 
     def __len__(self) -> int:
-        return self.cards.__len__()
+        return self._cards.__len__()
 
     def shuffle(self) -> None:
-        """
-        Shuffles the cards in the deck
-        """
-
-        random.shuffle(self.cards)
+        random.shuffle(self._cards)
 
     def deal(self) -> Card:
-        """
-        Deals one card off the deck
-
-        Returns
-        The card removed
-        """
-
-        return self.cards.pop()
+        return self._cards.pop()
 
 
 class HandIter:
-    """
-    Iterator for the class Hand
-    """
-
     def __init__(self, hand):
-        self.cards = hand.cards
-        self.index = 0
+        self._cards = hand.cards
+        self._index = 0
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        if self.index < len(self.cards):
-            output = self.cards[self.index]
-            self.index += 1
+        if self._index < len(self._cards):
+            output = self._cards[self._index]
+            self._index += 1
             return output
         else:
             raise StopIteration
 
 
 class Hand:
-    """
-    Hand of cards
-
-    Atributes
-    - total: int - sum of the rank values
-
-    Methods
-    - add(self, card: Card) -> None
-    - adjust_for_aces(self) -> None
-    """
-
     def __init__(self) -> None:
-        self.cards = []
+        self._cards = []
+        self._aces_to_adjust = 0
         self.total = 0
-        self.aces_to_adjust = 0
 
     def __iter__(self):
         return HandIter(self)
 
     def __len__(self):
-        return len(self.cards)
+        return len(self._cards)
 
     def __str__(self) -> str:
         if len(self) > 0:
-            return ", ".join([str(card) for card in self.cards])
+            return ", ".join([str(card) for card in self._cards])
         else:
             return ""
 
     def add(self, card: Card) -> None:
-        """
-        Adds a card to the hand
-
-        Parameters
-        - card: Card - card to be added
-        """
-
-        self.cards.append(card)
+        self._cards.append(card)
         if card.rank == "Ace":
             self.total += RANKS[card.rank]["max"]
-            self.aces_to_adjust += 1
+            self._aces_to_adjust += 1
         else:
             self.total += RANKS[card.rank]
 
@@ -144,8 +95,8 @@ class Hand:
         """
 
         adjusted = 0
-        while self.aces_to_adjust > 0 and self.total > 21:
-            self.aces_to_adjust -= 1
+        while self._aces_to_adjust > 0 and self.total > 21:
+            self._aces_to_adjust -= 1
             adjusted += 1
             self.total -= RANKS["Ace"]["max"]
             self.total += RANKS["Ace"]["min"]
