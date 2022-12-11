@@ -21,12 +21,10 @@ def print_dealer(dealer: entities.Hand, hide_first: bool=True) -> None:
     - hide_first: bool - if the first card must be hidden (default=True)
     """
 
-    if hide_first:
-        cards = tuple(dealer)
-        print("Dealer's hand: xxxxxxxxxxx", end="")
-        for i in range(1, len(cards)):
-            print(f", {cards[i]}", end="")
-        print()
+    if len(dealer)>0 and hide_first:
+        cards = [str(card) for card in dealer]
+        cards[0] = "xxxxxxxxxxx"
+        print(f"Dealer's hand: {', '.join(cards)}")
     else:
         print(f"Dealer's hand: {dealer}")
 
@@ -175,100 +173,105 @@ def div(wait: bool=True) -> None:
         print("\n" + output + "\n")
 
 
-print(r"   ___ _            _     _            _     ")
-print(r"  / __\ | __ _  ___| | __(_) __ _  ___| | __ ")
-print(r" /__\// |/ _` |/ __| |/ /| |/ _` |/ __| |/ / ")
-print(r"/ \/  \ | (_| | (__|   < | | (_| | (__|   <  ")
-print(r"\_____/_|\__,_|\___|_|\_\/ |\__,_|\___|_|\_\ ")
-print(r"                       |__/                  ")
-print()
+def main():
+    print(r"   ___ _            _     _            _     ")
+    print(r"  / __\ | __ _  ___| | __(_) __ _  ___| | __ ")
+    print(r" /__\// |/ _` |/ __| |/ /| |/ _` |/ __| |/ / ")
+    print(r"/ \/  \ | (_| | (__|   < | | (_| | (__|   <  ")
+    print(r"\_____/_|\__,_|\___|_|\_\/ |\__,_|\___|_|\_\ ")
+    print(r"                       |__/                  ")
+    print()
 
-chips = 100
+    chips = 100
 
-while True:
-    print("The round has begun!")
+    while True:
+        print("The round has begun!")
 
-    deck = entities.Deck()
-    deck.shuffle()
-    print("The deck of cards was shuffled")
+        deck = entities.Deck()
+        deck.shuffle()
+        print("The deck of cards was shuffled")
 
-    dealer_hand = entities.Hand()
-    player_hand = entities.Hand()
-    for _ in range(2):
-        player_hand.add( deck.deal() )
-        dealer_hand.add( deck.deal() )
-    print("The cards were dealt")
+        dealer_hand = entities.Hand()
+        player_hand = entities.Hand()
+        for _ in range(2):
+            player_hand.add( deck.deal() )
+            dealer_hand.add( deck.deal() )
+        print("The cards were dealt")
 
-    dealer_hand.adjust_for_aces()
-    adjusted = player_hand.adjust_for_aces()
-    if adjusted > 0:
-        print(f"Your hand exceeded 21 and {adjusted} aces has their value adjusted")
-    
-    print(f"You have {chips} chips")
-    bet = input_bet(chips)
+        dealer_hand.adjust_for_aces()
+        adjusted = player_hand.adjust_for_aces()
+        if adjusted > 0:
+            print(f"Your hand exceeded 21 and {adjusted} aces has their value adjusted")
+        
+        print(f"You have {chips} chips")
+        bet = input_bet(chips)
 
-    div(wait=False)
-    print("Your turn")
-    div(wait=False)
-
-    keep_playing = True
-    while keep_playing:
-        print_dealer(dealer_hand)
-        print_player(player_hand)
-        move = input_move()
-        if move == "hit":
-            hit(deck, player_hand)
-            keep_playing = not is_bust(player_hand)
-        else:
-            keep_playing = False
+        div(wait=False)
+        print("Your turn")
         div(wait=False)
 
-    if not is_bust(player_hand):
-        print("Dealer's turn")
-        div(wait=False)
-
-        while dealer_hand.total < 17:
+        keep_playing = True
+        while keep_playing:
             print_dealer(dealer_hand)
-            hit(deck, dealer_hand, show_ace_message=False)
-            div()
-        print(f"The hidden card was {tuple(dealer_hand)[0]}")
-        print(f"The dealer's final hand is {dealer_hand}")
-
-        div()
-
-        print(f"Dealer's hand: {dealer_hand}")
-        print(f"Your hand: {player_hand}")
-        if is_bust(dealer_hand):
-            print("The dealer is bust")
-            win = True
-        else:
-            winner = got_closer(dealer_hand, player_hand)
-            if winner == player_hand:
-                win = True
-            elif winner == dealer_hand:
-                win = False
+            print_player(player_hand)
+            move = input_move()
+            if move == "hit":
+                hit(deck, player_hand)
+                keep_playing = not is_bust(player_hand)
             else:
-                win = None
-    else:
-        print("You're bust!")
-        win = False
+                keep_playing = False
+            div(wait=False)
 
-    if win == True:
-        chips += bet
-        print(f"You win! (+{bet} chips)")
-    elif win == False:
-        chips -= bet
-        print(f"You lose! (-{bet} chips)")
-    else:
-        print("There was a tie")
-    print(f"You now have {chips} chips")
+        if not is_bust(player_hand):
+            print("Dealer's turn")
+            div(wait=False)
 
-    if chips <= 0:
-        print("You are out of chips, the game is over")
-        break
-    elif not play_again():
-        break
+            while dealer_hand.total < 17:
+                print_dealer(dealer_hand)
+                hit(deck, dealer_hand, show_ace_message=False)
+                div()
+            print(f"The hidden card was {tuple(dealer_hand)[0]}")
+            print(f"The dealer's final hand is {dealer_hand}")
 
-    div(wait=False)
+            div()
 
-print(f"You've finished the game with {chips} chips")
+            print(f"Dealer's hand: {dealer_hand}")
+            print(f"Your hand: {player_hand}")
+            if is_bust(dealer_hand):
+                print("The dealer is bust")
+                win = True
+            else:
+                winner = got_closer(dealer_hand, player_hand)
+                if winner == player_hand:
+                    win = True
+                elif winner == dealer_hand:
+                    win = False
+                else:
+                    win = None
+        else:
+            print("You're bust!")
+            win = False
+
+        if win == True:
+            chips += bet
+            print(f"You win! (+{bet} chips)")
+        elif win == False:
+            chips -= bet
+            print(f"You lose! (-{bet} chips)")
+        else:
+            print("There was a tie")
+        print(f"You now have {chips} chips")
+
+        if chips <= 0:
+            print("You are out of chips, the game is over")
+            break
+        elif not play_again():
+            break
+
+        div(wait=False)
+
+    print(f"You've finished the game with {chips} chips")
+
+
+if __name__ == "__main__":
+    main()
