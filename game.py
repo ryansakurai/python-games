@@ -172,7 +172,7 @@ def main():
                 hit(deck, dealer_hand, show_ace_message=False)
                 print_div()
             print(f"The hidden card was {tuple(dealer_hand)[0]}")
-            print(f"The dealer's final hand is {dealer_hand}")
+            print_dealer_hand(dealer_hand, hide_first_card=False)
 
             print_div()
 
