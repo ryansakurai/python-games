@@ -45,7 +45,7 @@ class Deck:
 
 class HandIter:
     def __init__(self, hand):
-        self._cards = hand.cards
+        self._cards = hand._cards
         self._index = 0
 
     def __iter__(self):
