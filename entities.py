@@ -115,15 +115,10 @@ class Hand:
         return len(self.cards)
 
     def __str__(self) -> str:
-        output = ""
-        if len(self.cards) > 0:
-            index = 0
-            output += str(self.cards[index])
-            index += 1
-            while index < len(self.cards):
-                output += f", {self.cards[index]}"
-                index += 1
-        return output
+        if len(self) > 0:
+            return ", ".join([str(card) for card in self.cards])
+        else:
+            return ""
 
     def add(self, card: Card) -> None:
         """
