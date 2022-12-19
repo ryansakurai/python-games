@@ -43,23 +43,6 @@ class Deck:
         return self._cards.pop()
 
 
-class HandIter:
-    def __init__(self, hand):
-        self._cards = hand._cards
-        self._index = 0
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if self._index < len(self._cards):
-            output = self._cards[self._index]
-            self._index += 1
-            return output
-        else:
-            raise StopIteration
-
-
 class Hand:
     def __init__(self) -> None:
         self._cards = []
@@ -67,7 +50,7 @@ class Hand:
         self.total = 0
 
     def __iter__(self):
-        return HandIter(self)
+        return iter(self._cards)
 
     def __len__(self):
         return len(self._cards)
